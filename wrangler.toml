@@ -1,0 +1,16 @@
+name = "xaostech-chat"
+compatibility_date = "2025-12-31"
+main = "src/index.js"
+
+[[kv_namespaces]]
+binding = "MESSAGES_KV"
+
+[vars]
+ENABLE_WEBSOCKET = "true"
+
+[env.production]
+routes = [{ pattern = "chat.xaostech.io/*", zone_name = "xaostech.io" }]
+
+[[env.production.kv_namespaces]]
+binding = "MESSAGES_KV"
+id = ""
