@@ -70,21 +70,28 @@
 
 ## 🔍 Overview
 
-chat worker
+Real-time messaging & chat service:
+- WebSocket support (via Durable Objects)
+- User-scoped message channels
+- Persistent message history
+- Session-based authentication
 
 ### Why chat.xaostech.io?
 
-{{WHY_PROJECT}}
+Dedicated **messaging operations** worker. Handles:
+- Real-time messaging
+- Channel management
+- Presence tracking
 
 ---
 
 ## ✨ Features
 
-- 🚀 **Feature 1** - Description of feature 1
-- 🔧 **Feature 2** - Description of feature 2
-- 📦 **Feature 3** - Description of feature 3
-- 🔒 **Feature 4** - Description of feature 4
-- ⚡ **Feature 5** - Description of feature 5
+- 💬 **Real-Time Messaging** - WebSocket via Durable Objects
+- 📚 **Message History** - D1 persistence
+- 👥 **User Channels** - Scoped to authenticated users
+- 🔐 **Auth Required** - Session token verification
+- ⚡ **Scalable** - Durable Objects for long-lived connections
 
 ---
 
@@ -92,12 +99,26 @@ chat worker
 
 ### Prerequisites
 
-- {{PREREQUISITE_1}}
-- {{PREREQUISITE_2}}
-- {{PREREQUISITE_3}}
+- Node.js 18+
+- Cloudflare account with Workers
+- D1 database
+- Durable Objects enabled
 
 ### Quick Start
 
+```bash
+# Clone the repository
+git clone https://github.com/XAOSTECH/chat.xaostech.io.git
+cd chat.xaostech.io
+
+# Install dependencies
+npm install
+
+# Local development
+npm run dev
+
+# Deploy to production
+npm run deploy
 ```bash
 # Clone the repository
 git clone https://github.com/XAOSTECH/chat.xaostech.io.git
