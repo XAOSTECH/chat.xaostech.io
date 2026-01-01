@@ -6,6 +6,7 @@ main = "src/index.js"
 ENABLE_WEBSOCKET = "true"
 
 [env.production]
+name = "xaostech-chat"
 routes = [{ pattern = "chat.xaostech.io/*", zone_name = "xaostech.io" }]
 
 [[env.production.kv_namespaces]]
