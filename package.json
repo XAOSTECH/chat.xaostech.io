@@ -3,8 +3,15 @@
   "version": "2.0.0",
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
     "deploy": "wrangler deploy --env production"
+  },
+  "dependencies": {
+    "astro": "latest",
+    "@astrojs/cloudflare": "latest",
+    "preact": "latest"
   },
   "devDependencies": {
     "wrangler": "latest"
