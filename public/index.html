@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XAOS Chat</title>
+    <style>
+      :root {
+        --primary-color: #f6821f;
+        --primary-hover: #e67e22;
+        --light-bg: #f9fafb;
+        --border-color: #e5e7eb;
+        --text-color: #1f2937;
+        --text-light: #6b7280;
+        --user-msg-bg: #fff2e6;
+        --assistant-msg-bg: #f3f4f6;
+        --room-msg-bg: #e0f2fe;
+        --active-tab: #1f2937;
+        --inactive-tab: #9ca3af;
+        --input-bg: #ffffff;
+        --input-border: #e5e7eb;
+        --chat-border: #e5e7eb;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Cantarell, sans-serif;
+        line-height: 1.6;
+        color: var(--text-color);
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 1rem;
+        background-color: #fff;
+        transition: background-color 0.2s color 0.2s;
+      }
+
+      /* Dark theme variables */
+      body.dark {
+        --primary-color: #ffb86b;
+        --primary-hover: #ffa94d;
+        --light-bg: #071126;
+        --border-color: #0f1724;
+        --text-color: #e6eef8;
+        --text-light: #94a3b8;
+        --user-msg-bg: #071126; /* darker */
+        --assistant-msg-bg: #0b1220; /* slightly lighter */
+        --room-msg-bg: #082033;
+        --input-bg: #071a2a;
+        --input-border: #123447;
+        --chat-border: #0f1724;
+        background-color: #071126;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      h1 {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+      }
+
+      .model-info {
+        font-size: 0.85rem;
+        color: var(--text-light);
+        margin-top: 0.5rem;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 0;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid var(--border-color);
+      }
+
+      .tab-button {
+        padding: 0.75rem 1.5rem;
+        background: none;
+        border: none;
+        border-bottom: 3px solid transparent;
+        cursor: pointer;
+        color: var(--inactive-tab);
+        font-size: 1rem;
+        transition: all 0.2s;
+      }
+
+      .tab-button.active {
+        color: var(--active-tab);
+        border-bottom-color: var(--primary-color);
+      }
+
+      .tab-button:hover {
+        color: var(--text-color);
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .chat-container {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 250px);
+        min-height: 400px;
+        border: 1px solid var(--chat-border, var(--border-color));
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        background-color: var(--light-bg);
+      }
+
+      .message {
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        border-radius: 8px;
+        max-width: 80%;
+      }
+
+      .user-message {
+        background-color: var(--user-msg-bg, #fff2e6);
+        margin-left: auto;
+        color: var(--text-color);
+      }
+
+      .assistant-message {
+        background-color: var(--assistant-msg-bg, #f3f4f6);
+        margin-right: auto;
+        color: var(--text-color);
+      }
+
+      .room-message {
+        background-color: var(--room-msg-bg, #e0f2fe);
+        margin-right: auto;
+        color: var(--text-color);
+      }
+
+      .message-author {
+        font-size: 0.8rem;
+        color: var(--text-light);
+        margin-bottom: 0.25rem;
+        font-weight: bold;
+      }
+
+      .message-time {
+        font-size: 0.75rem;
+        color: var(--text-light);
+        margin-top: 0.25rem;
+      }
+
+      .message-input {
+        display: flex;
+        padding: 0.75rem;
+        border-top: 1px solid var(--chat-border, var(--border-color));
+        background-color: var(--input-bg, #fff);
+        gap: 0.5rem;
+      }
+
+      #user-input, #ai-input, #social-input {
+        flex: 1;
+        padding: 0.75rem;
+        border: 1px solid var(--input-border, var(--border-color));
+        border-radius: 4px;
+        font-family: inherit;
+        resize: none;
+        min-height: 44px;
+        background: var(--input-bg, #fff);
+        color: var(--text-color);
+      }
+
+      #send-button, #ai-send, #social-send {
+        padding: 0 1rem;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      #send-button:hover, #ai-send:hover, #social-send:hover {
+        background-color: var(--primary-hover);
+      }
+
+      #send-button:disabled, #ai-send:disabled, #social-send:disabled {
+        background-color: var(--text-light);
+        cursor: not-allowed;
+      }
+
+      .typing-indicator {
+        display: none;
+        margin-bottom: 1rem;
+        font-style: italic;
+        color: var(--text-light);
+      }
+
+      .typing-indicator.visible {
+        display: block;
+      }
+
+      .rooms-list {
+        margin-bottom: 1rem;
+      }
+
+      .rooms-list label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--text-light);
+      }
+
+      .rooms-list select {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid var(--input-border);
+        border-radius: 4px;
+        font-family: inherit;
+        background: var(--input-bg);
+        color: var(--text-color);
+      }
+
+      .user-info {
+        margin-bottom: 1rem;
+      }
+
+      .user-info input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid var(--input-border);
+        border-radius: 4px;
+        font-family: inherit;
+        margin-bottom: 0.5rem;
+        background: var(--input-bg);
+        color: var(--text-color);
+      }
+
+      footer {
+        margin-top: 1rem;
+        text-align: center;
+        font-size: 0.85rem;
+        color: var(--text-light);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>⚡ XAOS Chat</h1>
+      <div style="display:flex;align-items:center;gap:12px;justify-content:center;">
+      <img id="logo" src="/api/assets/XAOSTECH_LOGO.png" alt="XAOSTECH Logo" style="height:40px;object-fit:contain;">
+      <div style="display:flex;flex-direction:column;align-items:flex-start;">
+        <div class="service-desc">XAOS Chat — AI-assisted chat plus social rooms (client-side interactive islands)</div>
+      </div>
+      <button id="theme-toggle" aria-label="Toggle theme" style="margin-left:12px;padding:6px;border-radius:6px;border:1px solid var(--border-color);background:transparent;cursor:pointer;">🌗</button>
+    </div>
+    </header>
+
+    <div class="tabs">
+      <button class="tab-button active" data-tab="ai">AI Chat</button>
+      <button class="tab-button" data-tab="social">Social Chat</button>
+    </div>
+
+    <!-- AI Chat Tab -->
+    <div id="ai" class="tab-content active">
+      <div style="margin-bottom:0.5rem;color:var(--text-light);font-size:0.95rem;">Model: <strong>@cf/meta/llama-3.3-70b-instruct-fp8-fast</strong></div>
+      <div class="chat-container">
+        <div id="ai-messages" class="chat-messages"></div>
+        <div id="ai-typing" class="typing-indicator">Assistant is typing…</div>
+        <div class="message-input">
+          <textarea id="ai-input" placeholder="Ask me anything..." aria-label="Message"></textarea>
+          <button id="ai-send">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Social Chat Tab -->
+    <div id="social" class="tab-content">
+      <div class="user-info">
+        <input type="text" id="user-id" placeholder="Your ID (e.g., user123)" value="user-demo">
+        <input type="text" id="user-name" placeholder="Your name (e.g., Alice)" value="Demo User">
+      </div>
+
+      <div class="rooms-list">
+        <label for="room-select">Select or create room:</label>
+        <select id="room-select">
+          <option value="">-- Load a room --</option>
+          <option value="general">general</option>
+          <option value="random">random</option>
+          <option value="announcements">announcements</option>
+        </select>
+      </div>
+
+      <div class="chat-container">
+        <div id="social-messages" class="chat-messages"></div>
+        <div class="message-input">
+          <textarea id="social-input" placeholder="Type a message..." aria-label="Room message"></textarea>
+          <button id="social-send">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 XAOS Chat. Powered by Cloudflare Workers AI.</p>
+    </footer>
+
+    <script src="chat.js"></script>
+  </body>
+</html>

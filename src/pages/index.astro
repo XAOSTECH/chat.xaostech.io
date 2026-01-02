@@ -1,0 +1,28 @@
+---
+import ChatIsland from '../components/ChatIsland.jsx';
+---
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XAOS Chat</title>
+    <link rel="icon" type="image/png" href="/api/assets/XAOSTECH_LOGO.png" />
+    <link rel="shortcut icon" href="/api/assets/XAOSTECH_LOGO.png" />
+    <style>
+      /* Minimal CSS to match previous UI (kept concise) */
+      :root{--primary-color:#f6821f}
+      body{font-family: Cantarell, sans-serif; margin:0;padding:1rem}
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>⚡ XAOS Chat</h1>
+      <div class="model-info">Model: @cf/meta/llama-3.3-70b-instruct-fp8-fast</div>
+    </header>
+
+    <main>
+      <ChatIsland client:load />
+    </main>
+
+  </body>
+</html>
