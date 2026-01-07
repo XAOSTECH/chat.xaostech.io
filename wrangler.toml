@@ -23,24 +23,6 @@ routes = [{ pattern = "chat.xaostech.io/*", zone_name = "xaostech.io" }]
 [env.production.vars]
 ENABLE_WEBSOCKET = "true"
 
-[[env.production.kv_namespaces]]
-binding = "MESSAGES_KV"
-id = "${KV_MESSAGES_ID}"
-
-[[env.production.kv_namespaces]]
-binding = "SESSION"
-id = "${KV_SESSIONS_ID}"
-
-[[env.production.r2_buckets]]
-binding = "IMG"
-bucket_name = "img"
-
-[env.production.ai]
-binding = "AI"
-
-[env.testing]
-routes = [{ pattern = "chat.testing.local/*", zone_name = "localhost" }]
-
 [env.testing.vars]
 ENABLE_WEBSOCKET = "true"
 
