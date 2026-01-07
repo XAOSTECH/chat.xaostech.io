@@ -5,10 +5,21 @@ export default function ChatIsland() {
   const [currentRoom, setCurrentRoom] = useState('general');
   const [messages, setMessages] = useState([]);
   const [aiMessages, setAiMessages] = useState([]);
-  const userIdRef = useRef('user-demo');
-  const userNameRef = useRef('Demo User');
+  const [currentUser, setCurrentUser] = useState(null);
   const aiInputRef = useRef(null);
   const socialInputRef = useRef(null);
+
+  // Fetch current user on mount
+  useEffect(() => {
+    fetch('/api/auth/me', { credentials: 'include' })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.user) {
+          setCurrentUser(data.user);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     // Restore selected room
@@ -19,7 +30,7 @@ export default function ChatIsland() {
   useEffect(() => {
     // Load room messages
     if (currentRoom) {
-      fetch(`/api/rooms/${currentRoom}`)
+      fetch(`/api/chat/rooms/${currentRoom}`)
         .then((r) => r.json())
         .then((data) => setMessages(data || []))
         .catch((e) => console.error('Failed loading room', e));
@@ -29,17 +40,21 @@ export default function ChatIsland() {
 
   async function sendSocialMessage() {
     const content = socialInputRef.current.value.trim();
-    const userId = userIdRef.current;
-    const username = userNameRef.current;
     if (!content || !currentRoom) return;
-    await fetch(`/api/rooms/${currentRoom}/post`, {
+    
+    const userId = currentUser?.id || 'guest';
+    const username = currentUser?.username || 'Guest';
+    const avatar_url = currentUser?.avatar_url || null;
+    
+    await fetch(`/api/chat/rooms/${currentRoom}/post`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, username, content }),
+      credentials: 'include',
+      body: JSON.stringify({ userId, username, content, avatar_url }),
     });
     socialInputRef.current.value = '';
     const now = new Date().toISOString();
-    setMessages((m) => m.concat([{ username, content, timestamp: now }]));
+    setMessages((m) => m.concat([{ username, content, timestamp: now, avatar_url }]));
   }
 
   async function sendAIMessage() {
@@ -71,8 +86,28 @@ export default function ChatIsland() {
     }
   }
 
+  const defaultAvatar = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="35" r="25" fill="%23666"/><ellipse cx="50" cy="90" rx="40" ry="30" fill="%23666"/></svg>';
+
   return (
     <div>
+      {/* User status bar */}
+      <div style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+        {currentUser ? (
+          <>
+            <img 
+              src={currentUser.avatar_url || defaultAvatar} 
+              alt={currentUser.username} 
+              style={{ width: 32, height: 32, borderRadius: '50%' }} 
+            />
+            <span>Logged in as <strong>{currentUser.username}</strong></span>
+          </>
+        ) : (
+          <span style={{ color: '#666' }}>
+            Chatting as Guest — <a href="/api/auth/github/login">Login with GitHub</a> for your avatar
+          </span>
+        )}
+      </div>
+
       <div style={{ marginBottom: '1rem' }}>
         <label>Room: </label>
         <select value={currentRoom} onChange={(e) => setCurrentRoom(e.target.value)}>
@@ -84,11 +119,18 @@ export default function ChatIsland() {
 
       <div style={{ border: '1px solid #ddd', padding: 12, borderRadius: 8, minHeight: 300 }}>
         <div>
-          {messages.map((m) => (
-            <div style={{ marginBottom: 8 }}>
-              <div style={{ fontSize: 12, color: '#666' }}>{m.username}</div>
-              <div>{m.content}</div>
-              <div style={{ fontSize: 11, color: '#999' }}>{new Date(m.timestamp).toLocaleString()}</div>
+          {messages.map((m, i) => (
+            <div key={i} style={{ marginBottom: 12, display: 'flex', gap: 10 }}>
+              <img 
+                src={m.avatar_url || defaultAvatar} 
+                alt={m.username} 
+                style={{ width: 36, height: 36, borderRadius: '50%', flexShrink: 0 }} 
+              />
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 13, fontWeight: 600 }}>{m.username}</div>
+                <div>{m.content}</div>
+                <div style={{ fontSize: 11, color: '#999' }}>{new Date(m.timestamp).toLocaleString()}</div>
+              </div>
             </div>
           ))}
         </div>
