@@ -296,11 +296,22 @@ function addSocialMessage(author, content, timestamp) {
   const messageEl = document.createElement("div");
   messageEl.className = "message room-message";
   const time = new Date(timestamp).toLocaleTimeString();
-  messageEl.innerHTML = `
-    <div class="message-author">${author}</div>
-    <p>${content}</p>
-    <div class="message-time">${time}</div>
-  `;
+
+  const authorEl = document.createElement("div");
+  authorEl.className = "message-author";
+  authorEl.textContent = author;
+
+  const contentEl = document.createElement("p");
+  contentEl.textContent = content;
+
+  const timeEl = document.createElement("div");
+  timeEl.className = "message-time";
+  timeEl.textContent = time;
+
+  messageEl.appendChild(authorEl);
+  messageEl.appendChild(contentEl);
+  messageEl.appendChild(timeEl);
+
   socialMessages.appendChild(messageEl);
   socialMessages.scrollTop = socialMessages.scrollHeight;
 }
