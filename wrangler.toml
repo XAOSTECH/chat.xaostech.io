@@ -20,6 +20,21 @@ name = "xaostech-chat"
 main = "dist/_worker.js/index.js"
 routes = [{ pattern = "chat.xaostech.io/*", zone_name = "xaostech.io" }]
 
+# D1 Database for message persistence
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "chat-db"
+database_id = "${D1_CHAT_DB_ID}"
+
+# KV for sessions (cross-subdomain auth)
+[[env.production.kv_namespaces]]
+binding = "SESSIONS_KV"
+id = "${KV_SESSIONS_ID}"
+
+# AI binding for LLM chat
+[env.production.ai]
+binding = "AI"
+
 [env.production.vars]
 ENABLE_WEBSOCKET = "true"
 
