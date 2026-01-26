@@ -190,7 +190,7 @@ roomSelect.addEventListener("change", async (e) => {
 
   try {
     socialMessages.innerHTML = "";
-    const response = await fetch(`/api/rooms/${currentRoom}`);
+    const response = await fetch(`/api/chat/rooms/${currentRoom}`);
 
     if (!response.ok) {
       // Don't attempt to parse non-OK responses as JSON
@@ -266,7 +266,7 @@ async function sendSocialMessage() {
   socialSend.disabled = true;
 
   try {
-    const response = await fetch(`/api/rooms/${currentRoom}/post`, {
+    const response = await fetch(`/api/chat/rooms/${currentRoom}/post`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
