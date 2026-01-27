@@ -15,10 +15,12 @@ persist = true
 invocation_logs = true
 
 [env.production]
-assets = { directory = "./public" }
 name = "xaostech-chat"
 main = "dist/_worker.js/index.js"
 routes = [{ pattern = "chat.xaostech.io/*", zone_name = "xaostech.io" }]
+
+[env.production.assets]
+directory = "./dist"
 
 # D1 Database for message persistence
 [[env.production.d1_databases]]
