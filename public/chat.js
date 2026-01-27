@@ -163,6 +163,23 @@ const userNameInput = document.getElementById("user-name");
 let currentRoom = null;
 let socialProcessing = false;
 
+// Fetch user info from session and populate fields
+(async function loadUserFromSession() {
+  try {
+    const res = await fetch('https://account.xaostech.io/api/auth/me', { credentials: 'include' });
+    if (res.ok) {
+      const user = await res.json();
+      if (user && user.id) {
+        userIdInput.value = user.id;
+        userNameInput.value = user.username || user.email || '';
+      }
+    }
+  } catch (e) {
+    // Not logged in or CORS issue - user can enter manually
+    console.log('Could not fetch user session');
+  }
+})();
+
 // Auto-resize textarea
 socialInput.addEventListener("input", function () {
   this.style.height = "auto";
