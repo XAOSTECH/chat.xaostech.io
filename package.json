@@ -11,6 +11,7 @@
   "dependencies": {
     "astro": "latest",
     "@astrojs/cloudflare": "latest",
+    "@astrojs/preact": "latest",
     "preact": "latest"
   },
   "devDependencies": {
