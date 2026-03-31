@@ -1,8 +1,9 @@
 import { defineMiddleware, sequence } from 'astro:middleware';
+import { applySecurityHeaders } from '../shared/types/security';
 
-// No-op middleware: let requests (including /api/*) be handled by the worker's fetch handler
-const passthrough = defineMiddleware(async (_context, next) => {
-  return next();
+const securityMiddleware = defineMiddleware(async (_context, next) => {
+  const res = await next();
+  return applySecurityHeaders(res);
 });
 
-export const onRequest = sequence(passthrough);
+export const onRequest = sequence(securityMiddleware);
