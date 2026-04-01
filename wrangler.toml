@@ -1,6 +1,5 @@
 name = "xaostech-chat"
 compatibility_date = "2025-12-31"
-main = "dist/_worker.js/index.js"
 send_metrics = false
 compatibility_flags = ["nodejs_compat"]
 
@@ -17,7 +16,6 @@ invocation_logs = true
 [env.production]
 assets = { directory = "./public" }
 name = "xaostech-chat"
-main = "dist/_worker.js/index.js"
 routes = [{ pattern = "chat.xaostech.io/*", zone_name = "xaostech.io" }]
 
 # AI binding for LLM chat
