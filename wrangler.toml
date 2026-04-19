@@ -14,9 +14,9 @@ persist = true
 invocation_logs = true
 
 [env.production]
-assets = { directory = "./public" }
+assets = { directory = "./dist/client", binding = "ASSETS" }
 name = "xaostech-chat"
-main = "./dist/_worker.js/index.js"
+main = "./dist/server/entry.mjs"
 routes = [{ pattern = "chat.xaostech.io/*", zone_name = "xaostech.io" }]
 
 # AI binding for LLM chat
