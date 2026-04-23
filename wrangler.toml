@@ -16,7 +16,7 @@ invocation_logs = true
 [env.production]
 assets = { directory = "./dist/client", binding = "ASSETS" }
 name = "xaostech-chat"
-main = "./dist/server/entry.mjs"
+main = "@astrojs/cloudflare/entrypoints/server"
 routes = [{ pattern = "chat.xaostech.io/*", zone_name = "xaostech.io" }]
 
 # AI binding for LLM chat
